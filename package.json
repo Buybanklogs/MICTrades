@@ -1,0 +1,19 @@
+{
+  "name": "p2p-crypto-buy-sell-app",
+  "version": "1.0.0",
+  "description": "Full-stack P2P crypto buy/sell web app with PostgreSQL and admin dashboard",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "seed:admin": "node scripts/seedAdmin.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.2",
+    "pg": "^8.13.1"
+  }
+}
