@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <main class="form-page">
+    <form class="auth-card hero-card" id="signupForm">
+      <span class="badge">SECURE REGISTRATION</span>
+      <h1>Create account</h1>
+      <p class="helper">Join and start trading today.</p>
+
+      <div class="form-row">
+        <div>
+          <label>First Name</label>
+          <input name="first_name" required />
+        </div>
+        <div>
+          <label>Last Name</label>
+          <input name="last_name" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label>Email Address</label>
+          <input name="email" type="email" required />
+        </div>
+        <div>
+          <label>Username</label>
+          <input name="username" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label>Phone Country Code</label>
+          <input name="phone_country_code" value="+234" />
+        </div>
+        <div>
+          <label>Phone Number</label>
+          <input name="phone_number" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label>Date of Birth</label>
+          <input name="date_of_birth" type="date" />
+        </div>
+        <div>
+          <label>Password</label>
+          <input name="password" type="password" required />
+        </div>
+      </div>
+
+      <label>Confirm Password</label>
+      <input name="confirm_password" type="password" required />
+
+      <button class="btn" style="width:100%;margin-top:18px">Create Account</button>
+      <div id="message" class="helper" style="margin-top:10px"></div>
+      <p class="helper" style="margin-top:18px">Already have an account? <a href="/signin.html" style="color:var(--primary)">Sign in</a></p>
+    </form>
+  </main>
+  <script src="/assets/js/common.js"></script>
+  <script>
+    if (getToken()) location.href = '/dashboard/home.html';
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('message');
+      if (form.get('password') !== form.get('confirm_password')) {
+        message.className = 'error';
+        message.textContent = 'Passwords do not match.';
+        return;
+      }
+      message.textContent = 'Creating account...';
+      try {
+        const data = await api('/api/auth/register', {
+          method: 'POST',
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        setToken(data.token);
+        location.href = '/dashboard/home.html';
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+  </script>
+</body>
+</html>

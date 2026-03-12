@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <main class="form-page">
+    <form class="auth-card hero-card" id="loginForm">
+      <span class="badge">SECURE LOGIN</span>
+      <h1>Welcome back</h1>
+      <p class="helper">Sign in to access your account.</p>
+      <label>Email or Username</label>
+      <input name="identifier" placeholder="Enter your email or username" required />
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Enter password" required />
+      <button class="btn" style="width:100%;margin-top:18px">Sign In</button>
+      <div id="message" class="helper" style="margin-top:10px"></div>
+      <p class="helper" style="margin-top:18px">Don't have an account? <a href="/signup.html" style="color:var(--primary)">Sign up</a></p>
+    </form>
+  </main>
+  <script src="/assets/js/common.js"></script>
+  <script>
+    if (getToken()) location.href = '/dashboard/home.html';
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('message');
+      message.textContent = 'Signing in...';
+      try {
+        const data = await api('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({
+            identifier: form.get('identifier'),
+            password: form.get('password')
+          })
+        });
+        setToken(data.token);
+        message.textContent = 'Login successful. Redirecting...';
+        location.href = '/dashboard/home.html';
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+  </script>
+</body>
+</html>

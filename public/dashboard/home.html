@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <a href="/" class="brand" style="margin-bottom:18px"><span class="brand-badge">TB</span><span>TechnobabbleSolutions</span></a>
+      <a href="#" class="active" data-view="p2p">P2P Crypto</a>
+      <a href="#" data-view="markets">Coin Markets</a>
+      <a href="#" data-view="history">History</a>
+      <a href="#" data-view="settings">Settings</a>
+      <a href="https://t.me/example" target="_blank">Telegram (Admin TG)</a>
+      <a href="#" data-view="support">Report a Problem</a>
+      <button class="nav-btn" id="logoutBtn">Logout</button>
+    </aside>
+
+    <main class="main">
+      <div class="toolbar">
+        <div>
+          <h2 id="welcomeTitle">Dashboard</h2>
+          <p class="helper">Manage your trades, payout details, and support requests.</p>
+        </div>
+        <div class="actions">
+          <span class="badge" id="userBadge">User</span>
+        </div>
+      </div>
+
+      <section id="dashboard-top">
+        <div class="cards">
+          <div class="card kpi"><h4>Pending Trades</h4><strong id="pendingCount">0</strong></div>
+          <div class="card kpi"><h4>Completed Trades</h4><strong id="completedCount">0</strong></div>
+          <div class="card kpi"><h4>BTC Buy Rate</h4><strong id="btcBuyRate">—</strong></div>
+          <div class="card kpi"><h4>USDT Sell Rate</h4><strong id="usdtSellRate">—</strong></div>
+        </div>
+      </section>
+
+      <section id="view-p2p" class="section">
+        <div class="trade-grid">
+          <div class="card panel">
+            <h3>Trade Cryptocurrency</h3>
+            <p class="helper">Choose buy or sell, select your coin, and place a trade request.</p>
+            <form id="tradeForm">
+              <div class="form-row">
+                <div>
+                  <label>Trade Type</label>
+                  <select name="trade_type" id="tradeType">
+                    <option value="buy">Buy</option>
+                    <option value="sell">Sell</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Currency</label>
+                  <select name="currency_code">
+                    <option value="NGN">NGN</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div>
+                  <label>Cryptocurrency</label>
+                  <select name="crypto_type" id="cryptoType"></select>
+                </div>
+                <div>
+                  <label>Amount</label>
+                  <input name="amount" id="amountInput" type="number" min="0" step="any" placeholder="Enter amount" required />
+                </div>
+              </div>
+              <label>Note (optional)</label>
+              <textarea name="user_note" placeholder="Add any note for the admin team"></textarea>
+              <button class="btn" style="margin-top:16px">Trade Now</button>
+              <div id="tradeMessage" class="helper" style="margin-top:10px"></div>
+            </form>
+          </div>
+
+          <div class="card panel">
+            <h3>Trade Summary</h3>
+            <div id="summaryBox">
+              <p><strong>You pay / send:</strong> <span id="summaryPay">₦0.00</span></p>
+              <p><strong>You receive:</strong> <span id="summaryReceive">0</span></p>
+              <p><strong>Rate:</strong> <span id="summaryRate">—</span></p>
+              <p class="helper">For buy trades, the system will show the company bank account. For sell trades, it will show the company wallet.</p>
+            </div>
+            <hr />
+            <div id="tradeResult" class="hidden">
+              <h3>Next step</h3>
+              <div class="notice" id="destinationBox"></div>
+              <div class="actions" style="margin-top:14px">
+                <button class="btn" id="confirmTradeBtn">I Have Paid / I Have Sent</button>
+              </div>
+              <div id="confirmTradeMessage" class="helper" style="margin-top:10px"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-markets" class="section hidden">
+        <div class="card panel">
+          <h3>Coin Markets</h3>
+          <p class="helper">Live market display from CoinGecko, separate from your internal buy/sell rates.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Coin</th><th>Price (USD)</th><th>24h Change</th></tr></thead>
+              <tbody id="marketsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-history" class="section hidden">
+        <div class="card panel">
+          <h3>Trade History</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Type</th><th>Coin</th><th>Amount</th><th>Rate</th><th>Status</th></tr>
+              </thead>
+              <tbody id="historyTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="section hidden">
+        <div class="split">
+          <div class="card panel">
+            <h3>Profile</h3>
+            <div id="profileBox" class="helper"></div>
+          </div>
+          <div class="card panel">
+            <h3>Payment Information</h3>
+            <form id="paymentForm">
+              <label>Bank Name</label>
+              <input name="bank_name" />
+              <label>Account Name</label>
+              <input name="account_name" />
+              <label>Account Number</label>
+              <input name="account_number" />
+              <label>BTC Wallet</label>
+              <input name="btc_wallet" />
+              <label>ETH Wallet</label>
+              <input name="eth_wallet" />
+              <label>USDT Wallet</label>
+              <input name="usdt_wallet" />
+              <button class="btn" style="margin-top:16px">Save Payment Info</button>
+              <div id="paymentMessage" class="helper" style="margin-top:10px"></div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-support" class="section hidden">
+        <div class="split">
+          <div class="card panel">
+            <h3>Report a Problem</h3>
+            <form id="supportForm">
+              <label>Subject</label>
+              <input name="subject" required />
+              <label>Category</label>
+              <input name="category" placeholder="Trade issue, payment issue, account issue..." />
+              <label>Message</label>
+              <textarea name="message" required></textarea>
+              <label>Screenshot (optional)</label>
+              <input name="screenshot" type="file" />
+              <button class="btn" style="margin-top:16px">Submit Ticket</button>
+              <div id="supportMessage" class="helper" style="margin-top:10px"></div>
+            </form>
+          </div>
+          <div class="card panel">
+            <h3>My Tickets</h3>
+            <div id="ticketsList" class="helper">No tickets yet.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/assets/js/common.js"></script>
+  <script>
+    if (!getToken()) location.href = '/signin.html';
+
+    let currentUser = null;
+    let rates = [];
+    let latestTradeId = null;
+
+    const views = ['p2p', 'markets', 'history', 'settings', 'support'];
+    document.querySelectorAll('.sidebar a[data-view]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar a[data-view]').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+        showView(link.dataset.view);
+      });
+    });
+
+    function showView(name) {
+      views.forEach(view => {
+        document.getElementById(`view-${view}`).classList.toggle('hidden', view !== name);
+      });
+    }
+
+    function renderSummary() {
+      const tradeType = document.getElementById('tradeType').value;
+      const cryptoType = document.getElementById('cryptoType').value;
+      const amount = Number(document.getElementById('amountInput').value || 0);
+      const rateRow = rates.find(r => r.crypto_type === cryptoType);
+      if (!rateRow) return;
+      const rate = tradeType === 'buy' ? Number(rateRow.buy_rate) : Number(rateRow.sell_rate);
+      document.getElementById('summaryRate').textContent = `${cryptoType} @ ${currency(rate)}`;
+      if (tradeType === 'buy') {
+        document.getElementById('summaryPay').textContent = currency(amount);
+        document.getElementById('summaryReceive').textContent = amount > 0 ? `${(amount / rate).toFixed(8)} ${cryptoType}` : `0 ${cryptoType}`;
+      } else {
+        document.getElementById('summaryPay').textContent = `${amount} ${cryptoType}`;
+        document.getElementById('summaryReceive').textContent = amount > 0 ? currency(amount * rate) : currency(0);
+      }
+    }
+
+    async function loadProfile() {
+      const { user } = await api('/api/auth/me', { auth: true });
+      currentUser = user;
+      document.getElementById('welcomeTitle').textContent = `Welcome, ${user.first_name}`;
+      document.getElementById('userBadge').textContent = user.username;
+      document.getElementById('profileBox').innerHTML = `
+        <p><strong>Name:</strong> ${user.first_name} ${user.last_name}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Username:</strong> ${user.username}</p>
+        <p><strong>Phone:</strong> ${user.phone_country_code || ''} ${user.phone_number || ''}</p>
+      `;
+    }
+
+    async function loadRates() {
+      const data = await api('/api/rates');
+      rates = data.rates;
+      const cryptoSelect = document.getElementById('cryptoType');
+      cryptoSelect.innerHTML = rates.map(rate => `<option value="${rate.crypto_type}">${rate.crypto_type}</option>`).join('');
+      const btc = rates.find(r => r.crypto_type === 'BTC');
+      const usdt = rates.find(r => r.crypto_type === 'USDT');
+      document.getElementById('btcBuyRate').textContent = btc ? currency(btc.buy_rate) : '—';
+      document.getElementById('usdtSellRate').textContent = usdt ? currency(usdt.sell_rate) : '—';
+      renderSummary();
+    }
+
+    async function loadHistory() {
+      const { trades } = await api('/api/trades', { auth: true });
+      document.getElementById('pendingCount').textContent = trades.filter(t => ['pending_admin_confirmation','awaiting_payment','awaiting_transfer','in_progress'].includes(t.status)).length;
+      document.getElementById('completedCount').textContent = trades.filter(t => t.status === 'completed').length;
+      document.getElementById('historyTable').innerHTML = trades.map(trade => `
+        <tr>
+          <td>${shortDate(trade.created_at)}</td>
+          <td>${trade.trade_type}</td>
+          <td>${trade.crypto_type}</td>
+          <td>${trade.amount}</td>
+          <td>${currency(trade.rate)}</td>
+          <td><span class="status ${trade.status}">${trade.status.replaceAll('_',' ')}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="6">No trades yet.</td></tr>';
+    }
+
+    async function loadPaymentDetails() {
+      const { payment_details } = await api('/api/user/payment-details', { auth: true });
+      if (!payment_details) return;
+      const form = document.getElementById('paymentForm');
+      ['bank_name','account_name','account_number','btc_wallet','eth_wallet','usdt_wallet'].forEach(key => {
+        form.elements[key].value = payment_details[key] || '';
+      });
+    }
+
+    async function loadTickets() {
+      const { tickets } = await api('/api/support/tickets', { auth: true });
+      document.getElementById('ticketsList').innerHTML = tickets.length ? tickets.map(ticket => `
+        <div class="card" style="padding:14px;margin-bottom:10px">
+          <strong>${ticket.subject}</strong>
+          <p class="helper">${ticket.category || 'General'}</p>
+          <p>${ticket.message}</p>
+          <span class="status ${ticket.status}">${ticket.status}</span>
+        </div>
+      `).join('') : 'No tickets yet.';
+    }
+
+    async function loadMarkets() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,tether,binancecoin');
+        const coins = await res.json();
+        document.getElementById('marketsTable').innerHTML = coins.map(coin => `
+          <tr>
+            <td>${coin.name}</td>
+            <td>$${Number(coin.current_price).toLocaleString()}</td>
+            <td>${Number(coin.price_change_percentage_24h || 0).toFixed(2)}%</td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        document.getElementById('marketsTable').innerHTML = '<tr><td colspan="3">Unable to load markets.</td></tr>';
+      }
+    }
+
+    document.getElementById('tradeType').addEventListener('change', renderSummary);
+    document.getElementById('cryptoType').addEventListener('change', renderSummary);
+    document.getElementById('amountInput').addEventListener('input', renderSummary);
+
+    document.getElementById('tradeForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('tradeMessage');
+      message.textContent = 'Submitting trade...';
+      try {
+        const data = await api('/api/trades', {
+          method: 'POST',
+          auth: true,
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        latestTradeId = data.trade.id;
+        document.getElementById('tradeResult').classList.remove('hidden');
+        const destination = data.destination;
+        const type = form.get('trade_type');
+        document.getElementById('destinationBox').innerHTML = type === 'buy'
+          ? `<strong>Company Bank Details</strong><br/>Bank: ${destination.bank_name}<br/>Account Name: ${destination.account_name}<br/>Account Number: ${destination.account_number}<br/><br/>${destination.instruction_note || ''}`
+          : `<strong>Company ${destination.crypto_type} Wallet</strong><br/>Address: ${destination.wallet_address}<br/>Network: ${destination.network || '—'}<br/>Memo/Tag: ${destination.memo_tag || '—'}<br/><br/>${destination.instruction_note || ''}`;
+        message.className = 'success';
+        message.textContent = 'Trade created successfully.';
+        await loadHistory();
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+
+    document.getElementById('confirmTradeBtn').addEventListener('click', async () => {
+      const message = document.getElementById('confirmTradeMessage');
+      if (!latestTradeId) return;
+      message.textContent = 'Submitting confirmation...';
+      try {
+        await api(`/api/trades/${latestTradeId}/confirm-payment`, {
+          method: 'POST',
+          auth: true,
+          body: JSON.stringify({})
+        });
+        message.className = 'success';
+        message.textContent = 'Your trade is now pending admin confirmation.';
+        await loadHistory();
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+
+    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('paymentMessage');
+      try {
+        await api('/api/user/payment-details', {
+          method: 'PUT',
+          auth: true,
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        message.className = 'success';
+        message.textContent = 'Payment information saved.';
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+
+    document.getElementById('supportForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('supportMessage');
+      message.textContent = 'Submitting ticket...';
+      try {
+        await api('/api/support/tickets', {
+          method: 'POST',
+          auth: true,
+          body: form
+        });
+        message.className = 'success';
+        message.textContent = 'Ticket submitted.';
+        e.target.reset();
+        await loadTickets();
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      clearToken();
+      location.href = '/signin.html';
+    });
+
+    (async () => {
+      try {
+        await Promise.all([loadProfile(), loadRates(), loadHistory(), loadPaymentDetails(), loadTickets(), loadMarkets()]);
+      } catch (err) {
+        clearToken();
+        location.href = '/signin.html';
+      }
+    })();
+  </script>
+</body>
+</html>

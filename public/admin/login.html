@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <main class="form-page">
+    <form class="auth-card hero-card" id="adminLoginForm">
+      <span class="badge">ADMIN ACCESS</span>
+      <h1>Admin login</h1>
+      <p class="helper">Use your admin credentials to manage trades, users, rates, and support.</p>
+      <label>Username or Email</label>
+      <input name="identifier" required />
+      <label>Password</label>
+      <input name="password" type="password" required />
+      <button class="btn" style="width:100%;margin-top:18px">Sign In</button>
+      <div id="message" class="helper" style="margin-top:10px"></div>
+    </form>
+  </main>
+  <script src="/assets/js/common.js"></script>
+  <script>
+    if (getAdminToken()) location.href = '/admin/dashboard.html';
+    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('message');
+      message.textContent = 'Signing in...';
+      try {
+        const data = await api('/api/admin/auth/login', {
+          method: 'POST',
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        setAdminToken(data.token);
+        location.href = '/admin/dashboard.html';
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+  </script>
+</body>
+</html>

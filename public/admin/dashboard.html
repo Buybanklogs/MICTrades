@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <a href="/" class="brand" style="margin-bottom:18px"><span class="brand-badge">TB</span><span>Admin Panel</span></a>
+      <a href="#" class="active" data-view="stats">Overview</a>
+      <a href="#" data-view="trades">Trade Approval</a>
+      <a href="#" data-view="users">Users</a>
+      <a href="#" data-view="rates">Rate Control</a>
+      <a href="#" data-view="company">Company Details</a>
+      <a href="#" data-view="tickets">Support Tickets</a>
+      <button class="nav-btn" id="adminLogoutBtn">Logout</button>
+    </aside>
+    <main class="main">
+      <div class="toolbar">
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p class="helper">Manage platform operations in one place.</p>
+        </div>
+      </div>
+
+      <section id="view-stats" class="section">
+        <div class="cards">
+          <div class="card kpi"><h4>Total Users</h4><strong id="statUsers">0</strong></div>
+          <div class="card kpi"><h4>Total Trades</h4><strong id="statTrades">0</strong></div>
+          <div class="card kpi"><h4>Pending Trades</h4><strong id="statPendingTrades">0</strong></div>
+          <div class="card kpi"><h4>Open Tickets</h4><strong id="statOpenTickets">0</strong></div>
+        </div>
+      </section>
+
+      <section id="view-trades" class="section hidden">
+        <div class="card panel">
+          <h3>Trade Approval Panel</h3>
+          <div class="table-wrap"><table>
+            <thead><tr><th>User</th><th>Type</th><th>Coin</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="adminTradesTable"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <section id="view-users" class="section hidden">
+        <div class="card panel">
+          <h3>User Management</h3>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Trades</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="adminUsersTable"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <section id="view-rates" class="section hidden">
+        <div class="split">
+          <div class="card panel">
+            <h3>Add or Update Rate</h3>
+            <form id="rateForm">
+              <label>Crypto Type</label><input name="crypto_type" placeholder="BTC" required />
+              <label>Buy Rate</label><input name="buy_rate" type="number" step="any" required />
+              <label>Sell Rate</label><input name="sell_rate" type="number" step="any" required />
+              <label>Min Amount</label><input name="min_amount" type="number" step="any" />
+              <label>Max Amount</label><input name="max_amount" type="number" step="any" />
+              <button class="btn" style="margin-top:14px">Save Rate</button>
+              <div id="rateMessage" class="helper" style="margin-top:10px"></div>
+            </form>
+          </div>
+          <div class="card panel">
+            <h3>Current Rates</h3>
+            <div id="ratesList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-company" class="section hidden">
+        <div class="split">
+          <div class="card panel">
+            <h3>Add Company Bank Account</h3>
+            <form id="bankForm">
+              <label>Bank Name</label><input name="bank_name" required />
+              <label>Account Name</label><input name="account_name" required />
+              <label>Account Number</label><input name="account_number" required />
+              <label>Instruction Note</label><textarea name="instruction_note"></textarea>
+              <button class="btn" style="margin-top:14px">Add Bank Account</button>
+              <div id="bankMessage" class="helper" style="margin-top:10px"></div>
+            </form>
+          </div>
+          <div class="card panel">
+            <h3>Add Company Wallet</h3>
+            <form id="walletForm">
+              <label>Crypto Type</label><input name="crypto_type" required />
+              <label>Wallet Address</label><input name="wallet_address" required />
+              <label>Network</label><input name="network" />
+              <label>Memo / Tag</label><input name="memo_tag" />
+              <label>Instruction Note</label><textarea name="instruction_note"></textarea>
+              <button class="btn" style="margin-top:14px">Add Wallet</button>
+              <div id="walletMessage" class="helper" style="margin-top:10px"></div>
+            </form>
+          </div>
+        </div>
+        <div class="split" style="margin-top:18px">
+          <div class="card panel"><h3>Bank Accounts</h3><div id="banksList"></div></div>
+          <div class="card panel"><h3>Crypto Wallets</h3><div id="walletsList"></div></div>
+        </div>
+      </section>
+
+      <section id="view-tickets" class="section hidden">
+        <div class="card panel">
+          <h3>Support Tickets</h3>
+          <div id="adminTicketsList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/assets/js/common.js"></script>
+  <script>
+    if (!getAdminToken()) location.href = '/admin/login.html';
+
+    const views = ['stats','trades','users','rates','company','tickets'];
+    document.querySelectorAll('.sidebar a[data-view]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar a[data-view]').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+        views.forEach(v => document.getElementById(`view-${v}`).classList.toggle('hidden', v !== link.dataset.view));
+      });
+    });
+
+    async function loadStats() {
+      const stats = await api('/api/admin/stats', { adminAuth: true });
+      document.getElementById('statUsers').textContent = stats.users.total;
+      document.getElementById('statTrades').textContent = stats.trades.total;
+      document.getElementById('statPendingTrades').textContent = stats.trades.pending;
+      document.getElementById('statOpenTickets').textContent = stats.tickets.open;
+    }
+
+    async function loadTrades() {
+      const { trades } = await api('/api/admin/trades', { adminAuth: true });
+      document.getElementById('adminTradesTable').innerHTML = trades.map(trade => `
+        <tr>
+          <td>${trade.first_name} ${trade.last_name}<br/><span class="helper">${trade.username}</span></td>
+          <td>${trade.trade_type}</td>
+          <td>${trade.crypto_type}</td>
+          <td>${trade.trade_type === 'buy' ? currency(trade.amount) : trade.amount}</td>
+          <td><span class="status ${trade.status}">${trade.status.replaceAll('_',' ')}</span></td>
+          <td class="actions">
+            <button class="btn" onclick="updateTradeStatus('${trade.id}','completed')">Complete</button>
+            <button class="btn btn-secondary" onclick="updateTradeStatus('${trade.id}','in_progress')">In Progress</button>
+            <button class="btn btn-danger" onclick="updateTradeStatus('${trade.id}','rejected')">Reject</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="6">No trades found.</td></tr>';
+    }
+
+    async function updateTradeStatus(id, status) {
+      const note = prompt('Optional admin note:') || '';
+      await api(`/api/admin/trades/${id}/status`, {
+        method: 'PATCH',
+        adminAuth: true,
+        body: JSON.stringify({ status, admin_note: note })
+      });
+      await Promise.all([loadStats(), loadTrades()]);
+    }
+
+    async function loadUsers() {
+      const { users } = await api('/api/admin/users', { adminAuth: true });
+      document.getElementById('adminUsersTable').innerHTML = users.map(user => `
+        <tr>
+          <td>${user.first_name} ${user.last_name}</td>
+          <td>${user.username}</td>
+          <td>${user.email}</td>
+          <td>${user.trades_count}</td>
+          <td>${user.is_active ? '<span class="badge">active</span>' : '<span class="status rejected">disabled</span>'}</td>
+          <td><button class="btn btn-secondary" onclick="toggleUser('${user.id}', ${!user.is_active})">${user.is_active ? 'Disable' : 'Enable'}</button></td>
+        </tr>
+      `).join('') || '<tr><td colspan="6">No users found.</td></tr>';
+    }
+
+    async function toggleUser(id, nextState) {
+      await api(`/api/admin/users/${id}/status`, {
+        method: 'PATCH',
+        adminAuth: true,
+        body: JSON.stringify({ is_active: nextState })
+      });
+      await Promise.all([loadStats(), loadUsers()]);
+    }
+
+    async function loadRates() {
+      const { rates } = await api('/api/admin/rates', { adminAuth: true });
+      document.getElementById('ratesList').innerHTML = rates.map(rate => `
+        <div class="card" style="padding:14px;margin-bottom:10px">
+          <strong>${rate.crypto_type}</strong>
+          <p>Buy: ${currency(rate.buy_rate)} | Sell: ${currency(rate.sell_rate)}</p>
+          <p class="helper">Min: ${rate.min_amount || 0} | Max: ${rate.max_amount || '—'}</p>
+        </div>
+      `).join('') || 'No rates configured.';
+    }
+
+    document.getElementById('rateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('rateMessage');
+      try {
+        await api('/api/admin/rates', {
+          method: 'POST',
+          adminAuth: true,
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        message.className = 'success';
+        message.textContent = 'Rate saved.';
+        e.target.reset();
+        await loadRates();
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+
+    async function loadCompanyDetails() {
+      const data = await api('/api/admin/company-payment-details', { adminAuth: true });
+      document.getElementById('banksList').innerHTML = data.bank_accounts.map(bank => `
+        <div class="card" style="padding:14px;margin-bottom:10px">
+          <strong>${bank.bank_name}</strong>
+          <p>${bank.account_name} — ${bank.account_number}</p>
+          <p class="helper">${bank.instruction_note || ''}</p>
+        </div>
+      `).join('') || 'No bank accounts yet.';
+      document.getElementById('walletsList').innerHTML = data.crypto_wallets.map(wallet => `
+        <div class="card" style="padding:14px;margin-bottom:10px">
+          <strong>${wallet.crypto_type}</strong>
+          <p>${wallet.wallet_address}</p>
+          <p class="helper">${wallet.network || ''} ${wallet.memo_tag ? '• ' + wallet.memo_tag : ''}</p>
+        </div>
+      `).join('') || 'No wallets yet.';
+    }
+
+    document.getElementById('bankForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('bankMessage');
+      try {
+        await api('/api/admin/company-bank-accounts', {
+          method: 'POST',
+          adminAuth: true,
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        message.className = 'success';
+        message.textContent = 'Bank account added.';
+        e.target.reset();
+        await loadCompanyDetails();
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+
+    document.getElementById('walletForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('walletMessage');
+      try {
+        await api('/api/admin/company-wallets', {
+          method: 'POST',
+          adminAuth: true,
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        message.className = 'success';
+        message.textContent = 'Wallet added.';
+        e.target.reset();
+        await loadCompanyDetails();
+      } catch (err) {
+        message.className = 'error';
+        message.textContent = err.message;
+      }
+    });
+
+    async function loadTickets() {
+      const { tickets } = await api('/api/admin/tickets', { adminAuth: true });
+      document.getElementById('adminTicketsList').innerHTML = tickets.map(ticket => `
+        <div class="card" style="padding:16px;margin-bottom:14px">
+          <div class="actions" style="justify-content:space-between">
+            <strong>${ticket.subject}</strong>
+            <span class="status ${ticket.status}">${ticket.status}</span>
+          </div>
+          <p class="helper">${ticket.first_name} ${ticket.last_name} • ${ticket.email}</p>
+          <p>${ticket.message}</p>
+          ${ticket.screenshot_url ? `<p><a style="color:var(--primary)" href="${ticket.screenshot_url}" target="_blank">View screenshot</a></p>` : ''}
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="ticketStatus('${ticket.id}','resolved')">Mark Resolved</button>
+            <button class="btn btn-danger" onclick="ticketStatus('${ticket.id}','closed')">Close</button>
+          </div>
+        </div>
+      `).join('') || 'No tickets found.';
+    }
+
+    async function ticketStatus(id, status) {
+      await api(`/api/admin/tickets/${id}/status`, {
+        method: 'PATCH',
+        adminAuth: true,
+        body: JSON.stringify({ status })
+      });
+      await Promise.all([loadStats(), loadTickets()]);
+    }
+
+    document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+      clearAdminToken();
+      location.href = '/admin/login.html';
+    });
+
+    (async () => {
+      try {
+        await Promise.all([loadStats(), loadTrades(), loadUsers(), loadRates(), loadCompanyDetails(), loadTickets()]);
+      } catch (err) {
+        clearAdminToken();
+        location.href = '/admin/login.html';
+      }
+    })();
+  </script>
+</body>
+</html>
