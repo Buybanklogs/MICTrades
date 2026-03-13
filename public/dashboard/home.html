@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIC Trades — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/dashboard-premium.css" />
+</head>
+<body>
+  <div class="mic-shell">
+    <aside class="mic-sidebar">
+      <div class="sidebar-top">
+        <a href="/" class="mic-brand" aria-label="MIC Trades home">
+          <img src="/assets/img/mic-trades-logo.png" alt="MIC Trades logo" class="brand-logo" />
+          <div class="brand-copy">
+            <strong>MIC Trades</strong>
+            <span>Digital asset exchange</span>
+          </div>
+        </a>
+
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="sidebar-card">
+        <p class="eyebrow">Account</p>
+        <div class="sidebar-user">
+          <div class="avatar-ring"><span id="userInitials">MT</span></div>
+          <div>
+            <strong id="sidebarUserName">Trader</strong>
+            <small id="sidebarUserTag">Secure access</small>
+          </div>
+        </div>
+      </div>
+
+      <nav class="mic-nav" id="sidebarNav">
+        <a href="#" class="nav-link active" data-view="p2p">
+          <span class="nav-icon">⇄</span>
+          <span>P2P Crypto</span>
+        </a>
+        <a href="#" class="nav-link" data-view="markets">
+          <span class="nav-icon">₿</span>
+          <span>Coin Markets</span>
+        </a>
+        <a href="#" class="nav-link" data-view="history">
+          <span class="nav-icon">◷</span>
+          <span>History</span>
+        </a>
+        <a href="#" class="nav-link" data-view="settings">
+          <span class="nav-icon">⚙</span>
+          <span>Settings</span>
+        </a>
+        <a href="https://t.me/example" target="_blank" rel="noreferrer" class="nav-link external-link">
+          <span class="nav-icon">✈</span>
+          <span>Telegram Support</span>
+        </a>
+        <a href="#" class="nav-link" data-view="support">
+          <span class="nav-icon">?</span>
+          <span>Report a Problem</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-button" id="logoutBtn">
+          <span class="nav-icon">↩</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="mic-main">
+      <header class="topbar-premium">
+        <div>
+          <p class="eyebrow">Dashboard overview</p>
+          <h1 id="welcomeTitle">Welcome back</h1>
+          <p class="topbar-copy">Manage trades, payout details, support tickets, and live market visibility from one premium workspace.</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="quick-chip live-chip">
+            <span class="pulse-dot"></span>
+            <span>Live rates active</span>
+          </div>
+          <div class="profile-pill">
+            <div class="profile-pill__avatar" id="userBadge">MT</div>
+            <div>
+              <strong id="topbarUserName">MIC User</strong>
+              <small>Verified trader</small>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero-strip">
+        <div class="hero-copy-panel glass-panel">
+          <div class="hero-copy-panel__content">
+            <span class="hero-badge">Trusted NGN ↔ Crypto flow</span>
+            <h2>Trade faster with a cleaner, guided payment experience.</h2>
+            <p>Place buy and sell requests, review internal rates, receive company payment instructions instantly, and track your status with admin confirmation.</p>
+          </div>
+          <div class="hero-mini-stats">
+            <div>
+              <small>Speed</small>
+              <strong>&lt; 2 min</strong>
+            </div>
+            <div>
+              <small>Settlement model</small>
+              <strong>Manual confirmation</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-side-card glass-panel">
+          <p class="eyebrow">Trade flow</p>
+          <ol class="flow-list">
+            <li>Choose buy or sell and review your live internal rate.</li>
+            <li>Submit your request and get the company bank or wallet details.</li>
+            <li>Mark payment as sent and wait for admin confirmation.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="dashboard-top" class="stats-grid">
+        <article class="stat-card stat-card--soft">
+          <div class="stat-card__top">
+            <span class="stat-label">Pending Trades</span>
+            <span class="stat-icon amber">⏳</span>
+          </div>
+          <strong id="pendingCount">0</strong>
+          <p>Awaiting confirmation or next action.</p>
+        </article>
+        <article class="stat-card stat-card--soft">
+          <div class="stat-card__top">
+            <span class="stat-label">Completed Trades</span>
+            <span class="stat-icon green">✓</span>
+          </div>
+          <strong id="completedCount">0</strong>
+          <p>Successfully settled requests.</p>
+        </article>
+        <article class="stat-card stat-card--blue">
+          <div class="stat-card__top">
+            <span class="stat-label">BTC Buy Rate</span>
+            <span class="stat-icon blue">₿</span>
+          </div>
+          <strong id="btcBuyRate">—</strong>
+          <p>Current internal buy rate for Bitcoin.</p>
+        </article>
+        <article class="stat-card stat-card--dark">
+          <div class="stat-card__top">
+            <span class="stat-label">USDT Sell Rate</span>
+            <span class="stat-icon dark">₮</span>
+          </div>
+          <strong id="usdtSellRate">—</strong>
+          <p>Current internal sell rate for Tether.</p>
+        </article>
+      </section>
+
+      <section id="view-p2p" class="view-panel">
+        <div class="trade-layout">
+          <article class="trade-card main-trade-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Trade center</p>
+                <h3>Buy or sell crypto</h3>
+              </div>
+              <div class="segmented-pill">
+                <span id="tradeModeLabel">Buy mode</span>
+              </div>
+            </div>
+
+            <form id="tradeForm" class="premium-form">
+              <div class="form-grid">
+                <label class="field-card">
+                  <span>Trade Type</span>
+                  <select name="trade_type" id="tradeType">
+                    <option value="buy">Buy</option>
+                    <option value="sell">Sell</option>
+                  </select>
+                </label>
+
+                <label class="field-card">
+                  <span>Currency</span>
+                  <select name="currency_code">
+                    <option value="NGN">NGN</option>
+                  </select>
+                </label>
+
+                <label class="field-card">
+                  <span>Cryptocurrency</span>
+                  <select name="crypto_type" id="cryptoType"></select>
+                </label>
+
+                <label class="field-card field-card--amount">
+                  <span>Amount</span>
+                  <input name="amount" id="amountInput" type="number" min="0" step="any" placeholder="Enter amount" required />
+                </label>
+              </div>
+
+              <label class="field-card field-card--full">
+                <span>Note for admin (optional)</span>
+                <textarea name="user_note" placeholder="Share any trade note or payout instruction for the team"></textarea>
+              </label>
+
+              <div class="trade-actions-row">
+                <button class="btn premium-btn" type="submit">Trade Now</button>
+                <div class="mini-help">
+                  After submission, the system shows the company bank account for buy requests or the company wallet for sell requests.
+                </div>
+              </div>
+
+              <div id="tradeMessage" class="helper inline-feedback"></div>
+            </form>
+          </article>
+
+          <aside class="trade-side-stack">
+            <article class="trade-card summary-card">
+              <div class="section-heading compact">
+                <div>
+                  <p class="eyebrow">Live preview</p>
+                  <h3>Trade Summary</h3>
+                </div>
+              </div>
+
+              <div class="summary-main">
+                <div class="summary-amount-block">
+                  <span>You pay / send</span>
+                  <strong id="summaryPay">₦0.00</strong>
+                </div>
+                <div class="summary-arrow">→</div>
+                <div class="summary-amount-block receive">
+                  <span>You receive</span>
+                  <strong id="summaryReceive">0</strong>
+                </div>
+              </div>
+
+              <div class="summary-rate-box">
+                <span>Rate</span>
+                <strong id="summaryRate">—</strong>
+              </div>
+
+              <div class="summary-note">
+                <strong>Settlement note</strong>
+                <p>For buy trades, the system shows the company bank account. For sell trades, it shows the company wallet and correct network instructions.</p>
+              </div>
+            </article>
+
+            <article class="trade-card next-step-card hidden" id="tradeResult">
+              <div class="section-heading compact">
+                <div>
+                  <p class="eyebrow">Payment instruction</p>
+                  <h3>Complete this trade</h3>
+                </div>
+              </div>
+              <div class="destination-box" id="destinationBox"></div>
+              <button class="btn premium-btn premium-btn--dark" id="confirmTradeBtn" type="button">I Have Paid / I Have Sent</button>
+              <div id="confirmTradeMessage" class="helper inline-feedback"></div>
+            </article>
+          </aside>
+        </div>
+      </section>
+
+      <section id="view-markets" class="view-panel hidden">
+        <article class="panel-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Market watch</p>
+              <h3>Coin markets</h3>
+            </div>
+            <div class="soft-badge">CoinGecko live feed</div>
+          </div>
+          <p class="section-copy">External market prices help users compare public market movement with MIC Trades internal buy and sell rates.</p>
+          <div class="premium-table-wrap">
+            <table>
+              <thead><tr><th>Coin</th><th>Price (USD)</th><th>24h Change</th></tr></thead>
+              <tbody id="marketsTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section id="view-history" class="view-panel hidden">
+        <article class="panel-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Transactions</p>
+              <h3>Trade history</h3>
+            </div>
+            <div class="soft-badge">Auto-synced from database</div>
+          </div>
+          <div class="premium-table-wrap">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Type</th><th>Coin</th><th>Amount</th><th>Rate</th><th>Status</th></tr>
+              </thead>
+              <tbody id="historyTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section id="view-settings" class="view-panel hidden">
+        <div class="dual-layout">
+          <article class="panel-card">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Account profile</p>
+                <h3>Personal details</h3>
+              </div>
+            </div>
+            <div id="profileBox" class="profile-grid"></div>
+          </article>
+
+          <article class="panel-card">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Payout destination</p>
+                <h3>Payment information</h3>
+              </div>
+            </div>
+            <form id="paymentForm" class="premium-form">
+              <div class="form-grid">
+                <label class="field-card"><span>Bank Name</span><input name="bank_name" /></label>
+                <label class="field-card"><span>Account Name</span><input name="account_name" /></label>
+                <label class="field-card"><span>Account Number</span><input name="account_number" /></label>
+                <label class="field-card"><span>BTC Wallet</span><input name="btc_wallet" /></label>
+                <label class="field-card"><span>ETH Wallet</span><input name="eth_wallet" /></label>
+                <label class="field-card"><span>USDT Wallet</span><input name="usdt_wallet" /></label>
+              </div>
+              <button class="btn premium-btn" style="margin-top: 18px" type="submit">Save Payment Info</button>
+              <div id="paymentMessage" class="helper inline-feedback"></div>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-support" class="view-panel hidden">
+        <div class="dual-layout">
+          <article class="panel-card">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Support desk</p>
+                <h3>Report a problem</h3>
+              </div>
+            </div>
+            <form id="supportForm" class="premium-form">
+              <label class="field-card"><span>Subject</span><input name="subject" required /></label>
+              <label class="field-card"><span>Category</span><input name="category" placeholder="Trade issue, payment issue, account issue..." /></label>
+              <label class="field-card field-card--full"><span>Message</span><textarea name="message" required></textarea></label>
+              <label class="field-card"><span>Screenshot (optional)</span><input name="screenshot" type="file" /></label>
+              <button class="btn premium-btn" style="margin-top: 18px" type="submit">Submit Ticket</button>
+              <div id="supportMessage" class="helper inline-feedback"></div>
+            </form>
+          </article>
+
+          <article class="panel-card">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Ticket history</p>
+                <h3>My tickets</h3>
+              </div>
+            </div>
+            <div id="ticketsList" class="tickets-grid">No tickets yet.</div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toastStack" class="toast-stack" aria-live="polite"></div>
+
+  <script src="/assets/js/common.js"></script>
+  <script>
+    if (!getToken()) location.href = '/signin.html';
+
+    let currentUser = null;
+    let rates = [];
+    let latestTradeId = null;
+
+    const views = ['p2p', 'markets', 'history', 'settings', 'support'];
+    const navLinks = document.querySelectorAll('.nav-link[data-view]');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        navLinks.forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+        showView(link.dataset.view);
+        if (window.innerWidth < 1040) document.body.classList.remove('sidebar-open');
+      });
+    });
+
+    sidebarToggle.addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-open');
+    });
+
+    function toast(message, type = 'info') {
+      const stack = document.getElementById('toastStack');
+      const item = document.createElement('div');
+      item.className = `toast toast--${type}`;
+      item.textContent = message;
+      stack.appendChild(item);
+      setTimeout(() => item.classList.add('toast--visible'), 20);
+      setTimeout(() => {
+        item.classList.remove('toast--visible');
+        setTimeout(() => item.remove(), 250);
+      }, 3200);
+    }
+
+    function initialsOf(user) {
+      const a = (user.first_name || 'M').charAt(0);
+      const b = (user.last_name || 'T').charAt(0);
+      return `${a}${b}`.toUpperCase();
+    }
+
+    function showView(name) {
+      views.forEach(view => {
+        document.getElementById(`view-${view}`).classList.toggle('hidden', view !== name);
+      });
+    }
+
+    function animateNumber(el, nextValue) {
+      const parsedNext = Number(nextValue || 0);
+      const startValue = Number(el.dataset.value || 0);
+      const duration = 450;
+      const start = performance.now();
+
+      function frame(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const current = Math.round(startValue + (parsedNext - startValue) * progress);
+        el.textContent = current.toLocaleString();
+        if (progress < 1) requestAnimationFrame(frame);
+        else el.dataset.value = parsedNext;
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    function renderSummary() {
+      const tradeType = document.getElementById('tradeType').value;
+      const cryptoType = document.getElementById('cryptoType').value;
+      const amount = Number(document.getElementById('amountInput').value || 0);
+      const rateRow = rates.find(r => r.crypto_type === cryptoType);
+      document.getElementById('tradeModeLabel').textContent = tradeType === 'buy' ? 'Buy mode' : 'Sell mode';
+      if (!rateRow) return;
+      const rate = tradeType === 'buy' ? Number(rateRow.buy_rate) : Number(rateRow.sell_rate);
+      document.getElementById('summaryRate').textContent = `${cryptoType} @ ${currency(rate)}`;
+      if (tradeType === 'buy') {
+        document.getElementById('summaryPay').textContent = currency(amount);
+        document.getElementById('summaryReceive').textContent = amount > 0 ? `${(amount / rate).toFixed(8)} ${cryptoType}` : `0 ${cryptoType}`;
+      } else {
+        document.getElementById('summaryPay').textContent = `${amount} ${cryptoType}`;
+        document.getElementById('summaryReceive').textContent = amount > 0 ? currency(amount * rate) : currency(0);
+      }
+    }
+
+    async function loadProfile() {
+      const { user } = await api('/api/auth/me', { auth: true });
+      currentUser = user;
+      const displayName = `${user.first_name} ${user.last_name}`.trim();
+      document.getElementById('welcomeTitle').textContent = `Welcome, ${user.first_name}`;
+      document.getElementById('topbarUserName').textContent = displayName || user.username;
+      document.getElementById('sidebarUserName').textContent = displayName || user.username;
+      document.getElementById('sidebarUserTag').textContent = user.email;
+      document.getElementById('userBadge').textContent = initialsOf(user);
+      document.getElementById('userInitials').textContent = initialsOf(user);
+      document.getElementById('profileBox').innerHTML = `
+        <div class="profile-item"><span>Full Name</span><strong>${displayName}</strong></div>
+        <div class="profile-item"><span>Email Address</span><strong>${user.email}</strong></div>
+        <div class="profile-item"><span>Username</span><strong>${user.username}</strong></div>
+        <div class="profile-item"><span>Phone</span><strong>${user.phone_country_code || ''} ${user.phone_number || ''}</strong></div>
+      `;
+    }
+
+    async function loadRates() {
+      const data = await api('/api/rates');
+      rates = data.rates;
+      const cryptoSelect = document.getElementById('cryptoType');
+      cryptoSelect.innerHTML = rates.map(rate => `<option value="${rate.crypto_type}">${rate.crypto_type}</option>`).join('');
+      const btc = rates.find(r => r.crypto_type === 'BTC');
+      const usdt = rates.find(r => r.crypto_type === 'USDT');
+      document.getElementById('btcBuyRate').textContent = btc ? currency(btc.buy_rate) : '—';
+      document.getElementById('usdtSellRate').textContent = usdt ? currency(usdt.sell_rate) : '—';
+      renderSummary();
+    }
+
+    async function loadHistory() {
+      const { trades } = await api('/api/trades', { auth: true });
+      const pending = trades.filter(t => ['pending_admin_confirmation','awaiting_payment','awaiting_transfer','in_progress'].includes(t.status)).length;
+      const completed = trades.filter(t => t.status === 'completed').length;
+      animateNumber(document.getElementById('pendingCount'), pending);
+      animateNumber(document.getElementById('completedCount'), completed);
+      document.getElementById('historyTable').innerHTML = trades.map(trade => `
+        <tr>
+          <td>${shortDate(trade.created_at)}</td>
+          <td><span class="type-chip ${trade.trade_type}">${trade.trade_type}</span></td>
+          <td>${trade.crypto_type}</td>
+          <td>${trade.amount}</td>
+          <td>${currency(trade.rate)}</td>
+          <td><span class="status ${trade.status}">${trade.status.replaceAll('_',' ')}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="6">No trades yet.</td></tr>';
+    }
+
+    async function loadPaymentDetails() {
+      const { payment_details } = await api('/api/user/payment-details', { auth: true });
+      if (!payment_details) return;
+      const form = document.getElementById('paymentForm');
+      ['bank_name','account_name','account_number','btc_wallet','eth_wallet','usdt_wallet'].forEach(key => {
+        form.elements[key].value = payment_details[key] || '';
+      });
+    }
+
+    async function loadTickets() {
+      const { tickets } = await api('/api/support/tickets', { auth: true });
+      document.getElementById('ticketsList').innerHTML = tickets.length ? tickets.map(ticket => `
+        <article class="ticket-card">
+          <div class="ticket-card__top">
+            <strong>${ticket.subject}</strong>
+            <span class="status ${ticket.status}">${ticket.status}</span>
+          </div>
+          <p>${ticket.category || 'General'}</p>
+          <small>${ticket.message}</small>
+        </article>
+      `).join('') : '<div class="empty-state">No tickets yet.</div>';
+    }
+
+    async function loadMarkets() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,tether,binancecoin');
+        const coins = await res.json();
+        document.getElementById('marketsTable').innerHTML = coins.map(coin => `
+          <tr>
+            <td>${coin.name}</td>
+            <td>$${Number(coin.current_price).toLocaleString()}</td>
+            <td class="${(coin.price_change_percentage_24h || 0) >= 0 ? 'market-up' : 'market-down'}">${Number(coin.price_change_percentage_24h || 0).toFixed(2)}%</td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        document.getElementById('marketsTable').innerHTML = '<tr><td colspan="3">Unable to load markets.</td></tr>';
+      }
+    }
+
+    document.getElementById('tradeType').addEventListener('change', renderSummary);
+    document.getElementById('cryptoType').addEventListener('change', renderSummary);
+    document.getElementById('amountInput').addEventListener('input', renderSummary);
+
+    document.getElementById('tradeForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('tradeMessage');
+      message.textContent = 'Submitting trade...';
+      try {
+        const data = await api('/api/trades', {
+          method: 'POST',
+          auth: true,
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        latestTradeId = data.trade.id;
+        document.getElementById('tradeResult').classList.remove('hidden');
+        const destination = data.destination;
+        const type = form.get('trade_type');
+        document.getElementById('destinationBox').innerHTML = type === 'buy'
+          ? `<strong>Company Bank Details</strong><div class="destination-grid"><span>Bank</span><strong>${destination.bank_name}</strong><span>Account Name</span><strong>${destination.account_name}</strong><span>Account Number</span><strong>${destination.account_number}</strong></div><p>${destination.instruction_note || ''}</p>`
+          : `<strong>Company ${destination.crypto_type} Wallet</strong><div class="destination-grid"><span>Address</span><strong>${destination.wallet_address}</strong><span>Network</span><strong>${destination.network || '—'}</strong><span>Memo/Tag</span><strong>${destination.memo_tag || '—'}</strong></div><p>${destination.instruction_note || ''}</p>`;
+        message.className = 'success inline-feedback';
+        message.textContent = 'Trade created successfully.';
+        toast('Trade created successfully.', 'success');
+        await loadHistory();
+      } catch (err) {
+        message.className = 'error inline-feedback';
+        message.textContent = err.message;
+        toast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('confirmTradeBtn').addEventListener('click', async () => {
+      const message = document.getElementById('confirmTradeMessage');
+      if (!latestTradeId) return;
+      message.textContent = 'Submitting confirmation...';
+      try {
+        await api(`/api/trades/${latestTradeId}/confirm-payment`, {
+          method: 'POST',
+          auth: true,
+          body: JSON.stringify({})
+        });
+        message.className = 'success inline-feedback';
+        message.textContent = 'Your trade is now pending admin confirmation.';
+        toast('Trade confirmation sent to admin.', 'success');
+        await loadHistory();
+      } catch (err) {
+        message.className = 'error inline-feedback';
+        message.textContent = err.message;
+        toast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('paymentMessage');
+      try {
+        await api('/api/user/payment-details', {
+          method: 'PUT',
+          auth: true,
+          body: JSON.stringify(Object.fromEntries(form.entries()))
+        });
+        message.className = 'success inline-feedback';
+        message.textContent = 'Payment information saved.';
+        toast('Payment information saved.', 'success');
+      } catch (err) {
+        message.className = 'error inline-feedback';
+        message.textContent = err.message;
+        toast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('supportForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const message = document.getElementById('supportMessage');
+      message.textContent = 'Submitting ticket...';
+      try {
+        await api('/api/support/tickets', {
+          method: 'POST',
+          auth: true,
+          body: form
+        });
+        message.className = 'success inline-feedback';
+        message.textContent = 'Ticket submitted.';
+        toast('Support ticket submitted.', 'success');
+        e.target.reset();
+        await loadTickets();
+      } catch (err) {
+        message.className = 'error inline-feedback';
+        message.textContent = err.message;
+        toast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      clearToken();
+      location.href = '/signin.html';
+    });
+
+    (async () => {
+      try {
+        await Promise.all([loadProfile(), loadRates(), loadHistory(), loadPaymentDetails(), loadTickets(), loadMarkets()]);
+      } catch (err) {
+        clearToken();
+        location.href = '/signin.html';
+      }
+    })();
+  </script>
+</body>
+</html>
